@@ -5,29 +5,29 @@ module GeoHash
   BASE32 = '0123456789bcdefghjkmnpqrstuvwxyz'
 
   NEIGHBORS = {
-    right: {
-      even: 'bc01fg45238967deuvhjyznpkmstqrwx',
-      odd:  'p0r21436x8zb9dcf5h7kjnmqesgutwvy',
-    },
-    left: {
-      even: '238967debc01fg45kmstqrwxuvhjyznp',
-      odd:  '14365h7k9dcfesgujnmqp0r2twvyx8zb',
-    },
-    top: {
-      even: 'p0r21436x8zb9dcf5h7kjnmqesgutwvy',
-      odd:  'bc01fg45238967deuvhjyznpkmstqrwx',
-    },
-    bottom: {
-      even: '14365h7k9dcfesgujnmqp0r2twvyx8zb',
-      odd:  '238967debc01fg45kmstqrwxuvhjyznp',
-    }
+    right: [
+      'bc01fg45238967deuvhjyznpkmstqrwx',
+      'p0r21436x8zb9dcf5h7kjnmqesgutwvy',
+    ],
+    left: [
+      '238967debc01fg45kmstqrwxuvhjyznp',
+      '14365h7k9dcfesgujnmqp0r2twvyx8zb',
+    ],
+    top: [
+      'p0r21436x8zb9dcf5h7kjnmqesgutwvy',
+      'bc01fg45238967deuvhjyznpkmstqrwx',
+    ],
+    bottom: [
+      '14365h7k9dcfesgujnmqp0r2twvyx8zb',
+      '238967debc01fg45kmstqrwxuvhjyznp',
+    ]
   }
 
   BORDERS = {
-    right:  { even: 'bcfguvyz', odd: 'prxz' },
-    left:   { even: '0145hjnp', odd: '028b' },
-    top:    { even: 'prxz',     odd: 'bcfguvyz' },
-    bottom: { even: '028b',     odd: '0145hjnp' },
+    right:  ['bcfguvyz', 'prxz'],
+    left:   ['0145hjnp', '028b'],
+    top:    ['prxz', 'bcfguvyz'],
+    bottom: ['028b', '0145hjnp'],
   }
 
   @@neighbors_cache = {}
@@ -137,15 +137,12 @@ module_function
     return @@adjacent_cache[dir][geohash] if @@adjacent_cache[dir][geohash]
 
     head, last = geohash[0..-2], geohash[-1]
-    type = [:even, :odd][geohash.length % 2]
+    parity = geohash.length % 2
 
-    head = adjacent(head, dir) if BORDERS[dir][type].include?(last)
+    head = adjacent(head, dir) if BORDERS[dir][parity].include?(last)
 
-    # NOTICE:
-    # do not use append `<<` instead of `+`
-    # head possibly be cached so that mustn't be mutated,
-    # just create new String instance with it
-    head = head + BASE32[NEIGHBORS[dir][type].index(last)]
+    # NOTICE: do not use append `<<` instead of `+=`
+    head += BASE32[NEIGHBORS[dir][parity].index(last)]
 
     @@adjacent_cache[dir][geohash] = head
   end
@@ -159,15 +156,7 @@ module_function
   # @return {[String]} result geohashes of the walk
   ###
   def walk(base, path)
-    hashes = []
-
-    h = base
-
-    path.each do |dir|
-      hashes << (h = adjacent(h, dir))
-    end
-
-    hashes
+    path.map { |dir| base = adjacent(base, dir) }
   end
 
 end

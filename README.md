@@ -34,7 +34,7 @@ GeoHash.decode 'c23nb6'
 #=> [[47.603759765625, -122.332763671875], [47.6092529296875, -122.32177734375]]
 ```
 
-### Adjacents
+### Adjacent
 
 ```ruby
 GeoHash.adjacent 'c23nb6', :top
