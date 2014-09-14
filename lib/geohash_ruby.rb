@@ -1,6 +1,6 @@
-module GeoHash
+module Geohash
 
-  VERSION = '1.0.1'
+  VERSION = '1.0.2'
 
   BASE32 = '0123456789bcdefghjkmnpqrstuvwxyz'
 
@@ -79,7 +79,7 @@ module_function
     mids = [latitude, longitude]
     bounds = [[-90.0, +90.0], [-180.0, +180.0]]
 
-    geohash = []
+    geohash = ''
 
     precision.times do |i|
       d = 0
@@ -95,7 +95,7 @@ module_function
       geohash << BASE32[d]
     end
 
-    geohash.join
+    geohash
   end
 
   ###
@@ -137,7 +137,7 @@ module_function
     return @@adjacent_cache[dir][geohash] if @@adjacent_cache[dir][geohash]
 
     head, last = geohash[0..-2], geohash[-1]
-    parity = geohash.length % 2
+    parity = geohash.length & 1
 
     head = adjacent(head, dir) if BORDERS[dir][parity].include?(last)
 

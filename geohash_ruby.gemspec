@@ -5,11 +5,11 @@ require 'geohash_ruby'
 
 Gem::Specification.new do |spec|
   spec.name          = 'geohash_ruby'
-  spec.version       = GeoHash::VERSION
+  spec.version       = Geohash::VERSION
   spec.authors       = ['Yuki Iwanaga']
   spec.email         = ['yuki@creasty.com']
-  spec.summary       = 'GeoHash en/decode library written in ruby'
-  spec.description   = 'GeoHash en/decode library written in ruby'
+  spec.summary       = 'Geohash en/decode library written in ruby'
+  spec.description   = 'Geohash en/decode library written in ruby'
   spec.homepage      = 'https://github.com/creasty/geohash_ruby'
   spec.license       = 'MIT'
 
