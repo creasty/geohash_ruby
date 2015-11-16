@@ -139,7 +139,7 @@ module_function
     head, last = geohash[0..-2], geohash[-1]
     parity = geohash.length & 1
 
-    head = adjacent(head, dir) if BORDERS[dir][parity].include?(last)
+    head = adjacent(head, dir) if BORDERS[dir][parity].include?(last) && head.length > 0
 
     # NOTICE: do not use append `<<` instead of `+=`
     head += BASE32[NEIGHBORS[dir][parity].index(last)]
