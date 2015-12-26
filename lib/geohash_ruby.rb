@@ -99,6 +99,43 @@ module_function
   end
 
   ###
+  # Encode binary string into geohash
+  #
+  # @params {String} binary_string
+  #
+  # @return {[[Float]]} decoded bounding box
+  #   [
+  #     [north_latitude, west_longitude],
+  #     [south_latitude, east_longitude]
+  #   ]
+  ###
+  def decode_binary(binary_string)
+    decode(encode_binary(binary_string))
+  end
+
+  ###
+  # Encode latitude and longitude into geohash
+  #
+  # @params {String} binary_string
+  #
+  # @return {String} geohash string
+  #
+  def encode_binary(binary_string)
+    geohash = ''
+
+    binary_string.scan(/.{1,5}/).each do |bit_part|
+      d = 0
+      bit_part.each_char.with_index do |c, i|
+        d |= c.to_i << (4 - i)
+      end
+
+      geohash << BASE32[d]
+    end
+
+    geohash
+  end
+
+  ###
   # Calculate neighbors geohash
   #
   # @params {String} geohash
