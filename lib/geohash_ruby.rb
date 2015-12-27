@@ -110,7 +110,15 @@ module_function
   #   ]
   ###
   def decode_binary(binary_string)
-    decode(encode_binary(binary_string))
+    bounds = [[-90.0, +90.0], [-180.0, +180.0]]
+
+    binary_string.each_char.with_index do |c, i|
+      bit = c.to_i(2)
+      k = 1-(i % 2)
+      bounds[k][bit ^ 1] = (bounds[k][0] + bounds[k][1]) / 2
+    end
+
+    bounds.transpose
   end
 
   ###
@@ -122,17 +130,29 @@ module_function
   #
   def encode_binary(binary_string)
     geohash = ''
+    geohash_childrens = []
 
     binary_string.scan(/.{1,5}/).each do |bit_part|
-      d = 0
-      bit_part.each_char.with_index do |c, i|
-        d |= c.to_i << (4 - i)
+      trail_bits = 5 - bit_part.size
+      if trail_bits == 0
+        d = 0
+        bit_part.each_char.with_index do |c, i|
+          d |= c.to_i(2) << (4 - i)
+        end
+        geohash << BASE32[d]
+      else
+        (2**trail_bits).times do |n|
+          child_string = bit_part + sprintf("%0#{trail_bits}b", n)
+          geohash_childrens.concat(encode_binary(child_string).map{|e| geohash + e })
+        end
       end
-
-      geohash << BASE32[d]
     end
 
-    geohash
+    if geohash_childrens.size > 1
+      geohash_childrens
+    else
+      [geohash]
+    end
   end
 
   ###
