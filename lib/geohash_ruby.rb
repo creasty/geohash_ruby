@@ -99,7 +99,7 @@ module_function
   end
 
   ###
-  # Encode binary string into geohash
+  # Decode geohash binary string into bounding box of latitudes and longitudes
   #
   # @params {String} binary_string
   #
@@ -122,11 +122,11 @@ module_function
   end
 
   ###
-  # Encode latitude and longitude into geohash
+  # Encode binary string into geohashes
   #
   # @params {String} binary_string
   #
-  # @return {String} geohash string
+  # @return {Array} geohash string array
   #
   def encode_binary(binary_string)
     geohash = ''
